@@ -1,8 +1,10 @@
 package web
 
 type Response struct {
-	StatusCode  int
-	Status      string
-	ContentType string
-	Body        string
+	StatusCode int
+	Status     string
+
+	Headers map[string]string
+
+	Body []byte
 }

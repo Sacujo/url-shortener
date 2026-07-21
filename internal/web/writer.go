@@ -5,21 +5,36 @@ import (
 	"strings"
 )
 
+var statusTexts = map[int]string{
+	200: "OK",
+	201: "Created",
+	302: "Found",
+	400: "Bad Request",
+	404: "Not Found",
+	500: "Internal Server Error",
+}
+
 func WriteResponse(resp Response) []byte {
 	if resp.Headers == nil {
 		resp.Headers = make(map[string]string)
 	}
 
-	statusLine := "HTTP/1.1 " + strconv.Itoa(resp.StatusCode) + " " + resp.Status + "\r\n"
+	status := statusTexts[resp.StatusCode]
 
-	_, ok := resp.Headers["Content-Length"]
-	if !ok {
+	statusLine := "HTTP/1.1 " +
+		strconv.Itoa(resp.StatusCode) +
+		" " +
+		status +
+		"\r\n"
+
+	if _, ok := resp.Headers["Content-Length"]; !ok {
 		resp.Headers["Content-Length"] = strconv.Itoa(len(resp.Body))
 	}
 
 	var b strings.Builder
 
 	b.WriteString(statusLine)
+
 	for key, value := range resp.Headers {
 		b.WriteString(key)
 		b.WriteString(": ")

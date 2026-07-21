@@ -23,6 +23,9 @@ func (r *Router) Handle(req web.Request) web.Response {
 	case req.Method == "POST" && req.Path == "/links":
 		return r.handler.CreateLink(req)
 
+	case req.Method == "GET":
+		return r.handler.Redirect(req)
+
 	default:
 		return r.handler.NotFound(req)
 	}

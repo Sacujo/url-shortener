@@ -15,10 +15,10 @@ func (h *Handler) CreateLink(req web.Request) web.Response {
 	url := strings.TrimSpace(string(req.Body))
 	if url == "" {
 		return web.Response{
-			StatusCode:  400,
-			Status:      "Bad Request",
-			ContentType: "text/plain",
-			Body:        "400 Bad Request: URL is required",
+			StatusCode: 400,
+			Status:     "Bad Request",
+			Headers:    map[string]string{"Content-Type": "text/plain"},
+			Body:       []byte("400 Bad Request: URL is required"),
 		}
 	}
 	for {
@@ -33,17 +33,17 @@ func (h *Handler) CreateLink(req web.Request) web.Response {
 		}
 		if err != nil {
 			return web.Response{
-				StatusCode:  500,
-				Status:      "Internal Server Error",
-				ContentType: "text/plain",
-				Body:        "500 Internal Server Error",
+				StatusCode: 500,
+				Status:     "Internal Server Error",
+				Headers:    map[string]string{"Content-Type": "text/plain"},
+				Body:       []byte("500 Internal Server Error"),
 			}
 		}
 		return web.Response{
-			StatusCode:  201,
-			Status:      "Created",
-			ContentType: "text/plain",
-			Body:        link.ID,
+			StatusCode: 201,
+			Status:     "Created",
+			Headers:    map[string]string{"Content-Type": "text/plain"},
+			Body:       []byte(link.ID),
 		}
 	}
 }

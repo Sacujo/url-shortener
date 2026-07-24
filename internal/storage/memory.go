@@ -33,3 +33,13 @@ func (s *MemoryStorage) FindByID(id string) (model.Link, error) {
 	}
 	return link, nil
 }
+
+func (s *MemoryStorage) IncrementClicks(id string) error {
+	link, exists := s.links[id]
+	if !exists {
+		return ErrNotFound
+	}
+	link.Clicks++
+	s.links[id] = link
+	return nil
+}

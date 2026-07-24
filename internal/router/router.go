@@ -1,6 +1,7 @@
 package router
 
 import (
+	"strings"
 	"url-shortener/internal/handler"
 	"url-shortener/internal/web"
 )
@@ -22,7 +23,8 @@ func (r *Router) Handle(req web.Request) web.Response {
 
 	case req.Method == "POST" && req.Path == "/links":
 		return r.handler.CreateLink(req)
-
+	case req.Method == "GET" && strings.HasPrefix(req.Path, "/stats/"):
+		return r.handler.Stats(req)
 	case req.Method == "GET":
 		return r.handler.Redirect(req)
 

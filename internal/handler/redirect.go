@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"strings"
 	"url-shortener/internal/web"
 )
@@ -10,6 +11,10 @@ func (h *Handler) Redirect(req web.Request) web.Response {
 	link, err := h.storage.FindByID(id)
 	if err != nil {
 		return h.NotFound(req)
+	}
+	err = h.storage.IncrementClicks(id)
+	if err != nil {
+		log.Printf("Failed to increment clicks for ID %s: %v", id, err)
 	}
 
 	return web.Response{

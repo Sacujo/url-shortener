@@ -13,10 +13,6 @@ func (h *Handler) Stats(req web.Request) web.Response {
 	if err != nil {
 		return h.NotFound(req)
 	}
-	err = h.storage.IncrementClicks(id)
-	if err != nil {
-		log.Printf("Failed to increment clicks for ID %s: %v", id, err)
-	}
 	body, err := json.Marshal(link)
 	if err != nil {
 		log.Printf("Failed to marshal link data for ID %s: %v", id, err)

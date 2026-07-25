@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"math/rand/v2"
 	"strings"
 	"url-shortener/internal/model"
@@ -27,7 +28,7 @@ func (h *Handler) CreateLink(req web.Request) web.Response {
 			URL: url,               // Здесь нужно получить URL из тела запроса
 		}
 		err := h.storage.Save(link)
-		if err == storage.ErrAlreadyExists {
+		if errors.Is(err, storage.ErrAlreadyExists) {
 			continue // Если идентификатор уже существует, генерируем новый
 
 		}

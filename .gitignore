@@ -1,0 +1,10 @@
+# Compiled binaries
+/cmd/server/server
+*.exe
+*.test
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS files
+.DS_Store

@@ -2,6 +2,7 @@ package storage
 
 import (
 	"errors"
+	"sync"
 	"url-shortener/internal/model"
 )
 
@@ -9,6 +10,7 @@ var ErrNotFound = errors.New("link not found")
 var ErrAlreadyExists = errors.New("link already exists")
 
 type MemoryStorage struct {
+	mu    sync.RWMutex
 	links map[string]model.Link
 }
 
@@ -19,6 +21,8 @@ func NewMemoryStorage() *MemoryStorage {
 }
 
 func (s *MemoryStorage) Save(link model.Link) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	if _, exists := s.links[link.ID]; exists {
 		return ErrAlreadyExists
 	}
@@ -27,6 +31,8 @@ func (s *MemoryStorage) Save(link model.Link) error {
 }
 
 func (s *MemoryStorage) FindByID(id string) (model.Link, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	link, exists := s.links[id]
 	if !exists {
 		return model.Link{}, ErrNotFound
@@ -35,6 +41,8 @@ func (s *MemoryStorage) FindByID(id string) (model.Link, error) {
 }
 
 func (s *MemoryStorage) IncrementClicks(id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	link, exists := s.links[id]
 	if !exists {
 		return ErrNotFound

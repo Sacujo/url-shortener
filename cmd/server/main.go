@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"net"
+	"os"
 	"url-shortener/internal/handler"
 	"url-shortener/internal/router"
 	"url-shortener/internal/storage"
@@ -11,7 +13,10 @@ import (
 )
 
 func main() {
-	store := storage.NewMemoryStorage()
+	store, err := newStorage()
+	if err != nil {
+		log.Fatalf("Failed to initialize storage: %v", err)
+	}
 	h := handler.New(store)
 	r := router.New(h)
 
@@ -30,6 +35,21 @@ func main() {
 		go handleConnection(conn, r)
 	}
 
+}
+
+func newStorage() (storage.Storage, error) {
+	switch driver := os.Getenv("STORAGE_DRIVER"); driver {
+	case "", "memory":
+		return storage.NewMemoryStorage(), nil
+	case "postgres":
+		dsn := os.Getenv("DATABASE_URL")
+		if dsn == "" {
+			return nil, fmt.Errorf("DATABASE_URL is required when STORAGE_DRIVER=postgres")
+		}
+		return storage.NewPostgresStorage(dsn)
+	default:
+		return nil, fmt.Errorf("unknown STORAGE_DRIVER: %q", driver)
+	}
 }
 
 func handleConnection(conn net.Conn, r *router.Router) {

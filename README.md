@@ -1,5 +1,7 @@
 # URL Shortener
 
+[![CI](https://github.com/Sacujo/url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/Sacujo/url-shortener/actions/workflows/ci.yml)
+
 Простой сервис сокращения ссылок на Go — учебный проект для практики построения
 HTTP-сервера "с нуля": без `net/http`, поверх сырого TCP (`net.Listen`), с ручным
 парсингом запроса и сборкой ответа.
